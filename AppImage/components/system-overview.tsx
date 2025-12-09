@@ -192,7 +192,7 @@ export function SystemOverview() {
       setHasAttemptedLoad(true)
 
       if (!systemResult) {
-        setError("Flask server not available. Please ensure the server is running.")
+        setError("Flask 服务不可用。请确保服务正在运行。")
         return
       }
 
@@ -277,9 +277,9 @@ export function SystemOverview() {
             <div className="flex items-center gap-3 text-red-600">
               <AlertCircle className="h-6 w-6" />
               <div>
-                <div className="font-semibold text-lg mb-1">Flask Server Not Available</div>
+                <div className="font-semibold text-lg mb-1">Flask 服务不可用</div>
                 <div className="text-sm">
-                  {error || "Unable to connect to the Flask server. Please ensure the server is running and try again."}
+                  {error || "无法连接到 Flask 服务器。请确保服务正在运行并重试。"}
                 </div>
               </div>
             </div>
@@ -351,25 +351,25 @@ export function SystemOverview() {
   if (systemData.available_updates && systemData.available_updates > 0) {
     systemAlerts.push({
       type: "warning",
-      message: `${systemData.available_updates} updates available`,
+      message: `有 ${systemData.available_updates} 个可用更新`,
     })
   }
   if (vmStats.stopped > 0) {
     systemAlerts.push({
       type: "info",
-      message: `${vmStats.stopped} VM${vmStats.stopped > 1 ? "s" : ""} stopped`,
+      message: `${vmStats.stopped} 个虚拟机已停止`,
     })
   }
   if (systemData.temperature > 75) {
     systemAlerts.push({
       type: "warning",
-      message: "High temperature detected",
+      message: "检测到高温",
     })
   }
   if (localStorage && localStorage.percent > 90) {
     systemAlerts.push({
       type: "warning",
-      message: "System storage almost full",
+      message: "系统存储空间即将用尽",
     })
   }
 
@@ -397,19 +397,19 @@ export function SystemOverview() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
         <Card className="bg-card border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">CPU Usage</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">CPU 使用率</CardTitle>
             <Cpu className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-xl lg:text-2xl font-bold text-foreground">{systemData.cpu_usage}%</div>
             <Progress value={systemData.cpu_usage} className="mt-2 [&>div]:bg-blue-500" />
-            <p className="text-xs text-muted-foreground mt-2">Real-time usage</p>
+            <p className="text-xs text-muted-foreground mt-2">实时使用率</p>
           </CardContent>
         </Card>
 
         <Card className="bg-card border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Memory Usage</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">内存使用率</CardTitle>
             <MemoryStick className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -426,7 +426,7 @@ export function SystemOverview() {
           <CardHeader>
             <CardTitle className="text-foreground flex items-center">
               <Server className="h-5 w-5 mr-2" />
-              Active VM & LXC
+              运行中的虚拟机与LXC容器
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -441,16 +441,16 @@ export function SystemOverview() {
                 <div className="text-xl lg:text-2xl font-bold text-foreground">{vmStats.running}</div>
                 <div className="mt-2 flex flex-wrap gap-1">
                   <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                    {vmStats.running} Running
+                    {vmStats.running} 个运行中
                   </Badge>
                   {vmStats.stopped > 0 && (
                     <Badge variant="outline" className="bg-red-500/10 text-red-500 border-red-500/20">
-                      {vmStats.stopped} Stopped
+                      {vmStats.stopped} 个已停止
                     </Badge>
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">
-                  Total: {vmStats.vms} VMs, {vmStats.lxc} LXC
+                  总计: {vmStats.vms} 个虚拟机, {vmStats.lxc} 个LXC容器
                 </p>
               </>
             )}
@@ -459,12 +459,12 @@ export function SystemOverview() {
 
         <Card className="bg-card border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Temperature</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">温度</CardTitle>
             <Thermometer className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-xl lg:text-2xl font-bold text-foreground">
-              {systemData.temperature === 0 ? "N/A" : `${systemData.temperature}°C`}
+              {systemData.temperature === 0 ? "不可用" : `${systemData.temperature}°C`}
             </div>
             <div className="flex items-center mt-2">
               <Badge variant="outline" className={tempStatus.color}>
@@ -472,7 +472,7 @@ export function SystemOverview() {
               </Badge>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              {systemData.temperature === 0 ? "No sensor available" : "Live temperature reading"}
+              {systemData.temperature === 0 ? "无可用传感器" : "实时温度读数"}
             </p>
           </CardContent>
         </Card>
@@ -485,7 +485,7 @@ export function SystemOverview() {
           <CardHeader>
             <CardTitle className="text-foreground flex items-center">
               <HardDrive className="h-5 w-5 mr-2" />
-              Storage Overview
+              存储概览
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -506,7 +506,7 @@ export function SystemOverview() {
                   return totalCapacity > 0 ? (
                     <div className="space-y-2 pb-4 border-b-2 border-border">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-foreground">Total Node Capacity:</span>
+                        <span className="text-sm font-medium text-foreground">节点总容量:</span>
                         <span className="text-lg font-bold text-foreground">
                           {formatNetworkTraffic(totalCapacity, "Bytes")}
                         </span>
@@ -518,13 +518,13 @@ export function SystemOverview() {
                       <div className="flex justify-between items-center mt-1">
                         <div className="flex items-center gap-3">
                           <span className="text-xs text-muted-foreground">
-                            Used:{" "}
+                            已使用:{" "}
                             <span className="font-semibold text-foreground">
                               {formatNetworkTraffic(totalUsed, "Bytes")}
                             </span>
                           </span>
                           <span className="text-xs text-muted-foreground">
-                            Free:{" "}
+                            可用:{" "}
                             <span className="font-semibold text-green-500">
                               {formatNetworkTraffic(totalAvailable, "Bytes")}
                             </span>
@@ -538,28 +538,28 @@ export function SystemOverview() {
 
                 <div className="space-y-2 pb-3 border-b border-border">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Total Capacity:</span>
+                    <span className="text-sm text-muted-foreground">总容量:</span>
                     <span className="text-lg font-semibold text-foreground">{storageData.total} TB</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Physical Disks:</span>
+                    <span className="text-sm text-muted-foreground">物理磁盘:</span>
                     <span className="text-sm font-semibold text-foreground">
-                      {storageData.disk_count} disk{storageData.disk_count !== 1 ? "s" : ""}
+                      {storageData.disk_count} 块
                     </span>
                   </div>
                 </div>
 
                 {vmLxcStorages && vmLxcStorages.length > 0 ? (
                   <div className="space-y-2 pb-3 border-b border-border">
-                    <div className="text-xs font-medium text-muted-foreground mb-2">VM/LXC Storage</div>
+                    <div className="text-xs font-medium text-muted-foreground mb-2">虚拟机/LXC容器存储</div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xs text-muted-foreground">Used:</span>
+                      <span className="text-xs text-muted-foreground">已使用:</span>
                       <span className="text-sm font-semibold text-foreground">
                         {formatNetworkTraffic(vmLxcStorageUsed, "Bytes")}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xs text-muted-foreground">Available:</span>
+                      <span className="text-xs text-muted-foreground">可用:</span>
                       <span className="text-sm font-semibold text-green-500">
                         {formatNetworkTraffic(vmLxcStorageAvailable, "Bytes")}
                       </span>
@@ -574,28 +574,28 @@ export function SystemOverview() {
                     </div>
                     {vmLxcStorages.length > 1 && (
                       <div className="text-xs text-muted-foreground mt-1">
-                        {vmLxcStorages.length} storage volume{vmLxcStorages.length > 1 ? "s" : ""}
+                        {vmLxcStorages.length} 个存储卷
                       </div>
                     )}
                   </div>
                 ) : (
                   <div className="space-y-2 pb-3 border-b border-border">
-                    <div className="text-xs font-medium text-muted-foreground mb-2">VM/LXC Storage</div>
-                    <div className="text-center py-4 text-muted-foreground text-sm">No VM/LXC storage configured</div>
+                    <div className="text-xs font-medium text-muted-foreground mb-2">虚拟机/LXC容器存储</div>
+                    <div className="text-center py-4 text-muted-foreground text-sm">未配置虚拟机/LXC容器存储</div>
                   </div>
                 )}
 
                 {localStorage && (
                   <div className="space-y-2">
-                    <div className="text-xs font-medium text-muted-foreground mb-2">Local Storage (System)</div>
+                    <div className="text-xs font-medium text-muted-foreground mb-2">本地存储 (系统)</div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xs text-muted-foreground">Used:</span>
+                      <span className="text-xs text-muted-foreground">已使用:</span>
                       <span className="text-sm font-semibold text-foreground">
                         {formatNetworkTraffic(localStorage.used, "Bytes")}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xs text-muted-foreground">Available:</span>
+                      <span className="text-xs text-muted-foreground">可用:</span>
                       <span className="text-sm font-semibold text-green-500">
                         {formatNetworkTraffic(localStorage.available, "Bytes")}
                       </span>
@@ -612,7 +612,7 @@ export function SystemOverview() {
                 )}
               </div>
             ) : (
-              <div className="text-center py-8 text-muted-foreground">Storage data not available</div>
+              <div className="text-center py-8 text-muted-foreground">存储数据不可用</div>
             )}
           </CardContent>
         </Card>
@@ -622,18 +622,18 @@ export function SystemOverview() {
             <CardTitle className="text-foreground flex items-center justify-between">
               <div className="flex items-center">
                 <Network className="h-5 w-5 mr-2" />
-                Network Overview
+                网络概览
               </div>
               <Select value={networkTimeframe} onValueChange={setNetworkTimeframe}>
                 <SelectTrigger className="w-28 h-8 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="hour">1 Hour</SelectItem>
-                  <SelectItem value="day">24 Hours</SelectItem>
-                  <SelectItem value="week">7 Days</SelectItem>
-                  <SelectItem value="month">30 Days</SelectItem>
-                  <SelectItem value="year">1 Year</SelectItem>
+                  <SelectItem value="hour">1 小时</SelectItem>
+                  <SelectItem value="day">24 小时</SelectItem>
+                  <SelectItem value="week">7 天</SelectItem>
+                  <SelectItem value="month">30 天</SelectItem>
+                  <SelectItem value="year">1 年</SelectItem>
                 </SelectContent>
               </Select>
             </CardTitle>
@@ -648,7 +648,7 @@ export function SystemOverview() {
             ) : networkData ? (
               <div className="space-y-4">
                 <div className="flex justify-between items-center pb-3 border-b border-border">
-                  <span className="text-sm text-muted-foreground">Active Interfaces:</span>
+                  <span className="text-sm text-muted-foreground">活动接口:</span>
                   <span className="text-lg font-semibold text-foreground">
                     {(networkData.physical_active_count || 0) + (networkData.bridge_active_count || 0)}
                   </span>
@@ -690,7 +690,7 @@ export function SystemOverview() {
 
                 <div className="pt-2 border-t border-border space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Received:</span>
+                    <span className="text-sm text-muted-foreground">已接收:</span>
                     <span className="text-lg font-semibold text-green-500 flex items-center gap-1">
                       ↓{" "}
                       {networkUnit === "Bytes"
@@ -700,7 +700,7 @@ export function SystemOverview() {
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Sent:</span>
+                    <span className="text-sm text-muted-foreground">已发送:</span>
                     <span className="text-lg font-semibold text-blue-500 flex items-center gap-1">
                       ↑{" "}
                       {networkUnit === "Bytes"
@@ -720,7 +720,7 @@ export function SystemOverview() {
                 </div>
               </div>
             ) : (
-              <div className="text-center py-8 text-muted-foreground">Network data not available</div>
+              <div className="text-center py-8 text-muted-foreground">网络数据不可用</div>
             )}
           </CardContent>
         </Card>
@@ -731,27 +731,27 @@ export function SystemOverview() {
           <CardHeader>
             <CardTitle className="text-foreground flex items-center">
               <Server className="h-5 w-5 mr-2" />
-              System Information
+              系统信息
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Uptime:</span>
+              <span className="text-muted-foreground">运行时间:</span>
               <span className="text-foreground">{systemData.uptime}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Proxmox Version:</span>
+              <span className="text-muted-foreground">Proxmox 版本:</span>
               <span className="text-foreground">{systemData.proxmox_version || "N/A"}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Kernel:</span>
+              <span className="text-muted-foreground">内核:</span>
               <span className="text-foreground font-mono text-sm">{systemData.kernel_version || "Linux"}</span>
             </div>
             {systemData.available_updates !== undefined && systemData.available_updates > 0 && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Available Updates:</span>
+                <span className="text-muted-foreground">可用更新:</span>
                 <Badge variant="outline" className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20">
-                  {systemData.available_updates} packages
+                  {systemData.available_updates} 个软件包
                 </Badge>
               </div>
             )}
@@ -762,13 +762,13 @@ export function SystemOverview() {
           <CardHeader>
             <CardTitle className="text-foreground flex items-center">
               <Zap className="h-5 w-5 mr-2" />
-              System Overview
+              系统概览
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex justify-between items-center pb-3 border-b border-border">
               <div className="flex flex-col">
-                <span className="text-sm text-muted-foreground">Load Average (1m):</span>
+                <span className="text-sm text-muted-foreground">平均负载 (1分钟):</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-lg font-semibold text-foreground font-mono">
@@ -781,17 +781,17 @@ export function SystemOverview() {
             </div>
 
             <div className="flex justify-between items-center pb-3 border-b border-border">
-              <span className="text-sm text-muted-foreground">CPU Threads:</span>
+              <span className="text-sm text-muted-foreground">CPU 线程数:</span>
               <span className="text-lg font-semibold text-foreground">{systemData.cpu_threads || "N/A"}</span>
             </div>
 
             <div className="flex justify-between items-center pb-3 border-b border-border">
-              <span className="text-sm text-muted-foreground">Physical Disks:</span>
+              <span className="text-sm text-muted-foreground">物理磁盘:</span>
               <span className="text-lg font-semibold text-foreground">{storageData?.disk_count || "N/A"}</span>
             </div>
 
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Network Interfaces:</span>
+              <span className="text-sm text-muted-foreground">网络接口数:</span>
               <span className="text-lg font-semibold text-foreground">
                 {networkData?.physical_total_count || networkData?.physical_interfaces?.length || "N/A"}
               </span>
