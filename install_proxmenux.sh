@@ -55,7 +55,7 @@ MONITOR_SERVICE_FILE="/etc/systemd/system/proxmenux-monitor.service"
 MONITOR_PORT=8008
 
 # Offline installer envs
-REPO_URL="https://github.com/MacRimi/ProxMenux.git"
+REPO_URL="https://github.com/ryiann/ProxMenux.git"
 TEMP_DIR="/tmp/proxmenux-install-$$"
 
 # Load utility functions
