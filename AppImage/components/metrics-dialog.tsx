@@ -15,11 +15,11 @@ interface MetricsViewProps {
 }
 
 const TIMEFRAME_OPTIONS = [
-  { value: "hour", label: "1 Hour" },
-  { value: "day", label: "24 Hours" },
-  { value: "week", label: "7 Days" },
-  { value: "month", label: "30 Days" },
-  { value: "year", label: "1 Year" },
+  { value: "hour", label: "1 小时" },
+  { value: "day", label: "24 小时" },
+  { value: "week", label: "7 天" },
+  { value: "month", label: "30 天" },
+  { value: "year", label: "1 年" },
 ]
 
 const CustomCPUTooltip = ({ active, payload, label }: any) => {
@@ -173,7 +173,7 @@ export function MetricsView({ vmid, vmName, vmType, onBack }: MetricsViewProps) 
 
       setData(transformedData)
     } catch (err: any) {
-      setError(err.message || "Error loading metrics")
+      setError(err.message || "加载监控指标时发生错误")
     } finally {
       setLoading(false)
     }
@@ -203,7 +203,7 @@ export function MetricsView({ vmid, vmName, vmType, onBack }: MetricsViewProps) 
     if (data.length === 0) {
       return (
         <div className="flex items-center justify-center h-[400px]">
-          <p className="text-muted-foreground">No data available</p>
+          <p className="text-muted-foreground">暂无数据</p>
         </div>
       )
     }
@@ -214,7 +214,7 @@ export function MetricsView({ vmid, vmName, vmType, onBack }: MetricsViewProps) 
       <div className="space-y-8">
         {/* CPU Chart */}
         <div>
-          <h3 className="text-lg font-semibold mb-4">CPU Usage</h3>
+          <h3 className="text-lg font-semibold mb-4">CPU 使用率</h3>
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={data} margin={{ bottom: 80 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-border" />
@@ -252,7 +252,7 @@ export function MetricsView({ vmid, vmName, vmType, onBack }: MetricsViewProps) 
 
         {/* Memory Chart */}
         <div>
-          <h3 className="text-lg font-semibold mb-4">Memory Usage</h3>
+          <h3 className="text-lg font-semibold mb-4">内存使用率</h3>
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={data} margin={{ bottom: 80 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-border" />
@@ -290,7 +290,7 @@ export function MetricsView({ vmid, vmName, vmType, onBack }: MetricsViewProps) 
 
         {/* Disk I/O Chart */}
         <div>
-          <h3 className="text-lg font-semibold mb-4">Disk I/O</h3>
+          <h3 className="text-lg font-semibold mb-4">磁盘 I/O</h3>
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={data} margin={{ bottom: 80 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-border" />
@@ -340,7 +340,7 @@ export function MetricsView({ vmid, vmName, vmType, onBack }: MetricsViewProps) 
 
         {/* Network I/O Chart */}
         <div>
-          <h3 className="text-lg font-semibold mb-4">Network I/O</h3>
+          <h3 className="text-lg font-semibold mb-4">网络 I/O</h3>
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={data} margin={{ bottom: 80 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-border" />
@@ -371,7 +371,7 @@ export function MetricsView({ vmid, vmName, vmType, onBack }: MetricsViewProps) 
                 fill="#10b981"
                 fillOpacity={0.3}
                 strokeWidth={2}
-                name="Download"
+                name="下载"
                 hide={hiddenNetworkLines.includes("netin")}
               />
               <Area
@@ -381,7 +381,7 @@ export function MetricsView({ vmid, vmName, vmType, onBack }: MetricsViewProps) 
                 fill="#3b82f6"
                 fillOpacity={0.3}
                 strokeWidth={2}
-                name="Upload"
+                name="上传"
                 hide={hiddenNetworkLines.includes("netout")}
               />
             </AreaChart>
