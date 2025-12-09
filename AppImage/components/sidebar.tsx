@@ -3,14 +3,14 @@
 import { LayoutDashboard, HardDrive, Network, Server, Cpu, FileText, SettingsIcon, Terminal } from "lucide-react"
 
 const menuItems = [
-  { name: "Overview", href: "/", icon: LayoutDashboard },
-  { name: "Storage", href: "/storage", icon: HardDrive },
-  { name: "Network", href: "/network", icon: Network },
-  { name: "Virtual Machines", href: "/virtual-machines", icon: Server },
-  { name: "Hardware", href: "/hardware", icon: Cpu },
-  { name: "System Logs", href: "/logs", icon: FileText },
-  { name: "Terminal", href: "/terminal", icon: Terminal },
-  { name: "Settings", href: "/settings", icon: SettingsIcon },
+    { name: "概览", href: "/", icon: LayoutDashboard },
+    { name: "存储", href: "/storage", icon: HardDrive },
+    { name: "网络", href: "/network", icon: Network },
+    { name: "虚拟机", href: "/virtual-machines", icon: Server },
+    { name: "硬件", href: "/hardware", icon: Cpu },
+    { name: "系统日志", href: "/logs", icon: FileText },
+    { name: "终端", href: "/terminal", icon: Terminal },
+    { name: "设置", href: "/settings", icon: SettingsIcon },
 ]
 
 const Sidebar = ({ currentPath, setOpen }) => {
@@ -32,7 +32,7 @@ const Sidebar = ({ currentPath, setOpen }) => {
         }`}
       >
         <LayoutDashboard className="h-5 w-5" />
-        <span>Overview</span>
+        <span>概览</span>
       </button>
 
       <button
@@ -44,7 +44,7 @@ const Sidebar = ({ currentPath, setOpen }) => {
         }`}
       >
         <HardDrive className="h-5 w-5" />
-        <span>Storage</span>
+        <span>存储</span>
       </button>
 
       <button
@@ -56,7 +56,7 @@ const Sidebar = ({ currentPath, setOpen }) => {
         }`}
       >
         <Network className="h-5 w-5" />
-        <span>Network</span>
+        <span>网络</span>
       </button>
 
       <button
@@ -68,7 +68,7 @@ const Sidebar = ({ currentPath, setOpen }) => {
         }`}
       >
         <Server className="h-5 w-5" />
-        <span>VMs & LXCs</span>
+        <span>虚拟机与LXC容器</span>
       </button>
 
       <button
@@ -80,7 +80,7 @@ const Sidebar = ({ currentPath, setOpen }) => {
         }`}
       >
         <Cpu className="h-5 w-5" />
-        <span>Hardware</span>
+        <span>硬件</span>
       </button>
 
       <button
@@ -92,7 +92,7 @@ const Sidebar = ({ currentPath, setOpen }) => {
         }`}
       >
         <FileText className="h-5 w-5" />
-        <span>System Logs</span>
+        <span>系统日志</span>
       </button>
 
       <button
@@ -104,7 +104,7 @@ const Sidebar = ({ currentPath, setOpen }) => {
         }`}
       >
         <Terminal className="h-5 w-5" />
-        <span>Terminal</span>
+        <span>终端</span>
       </button>
 
       <button
@@ -116,7 +116,7 @@ const Sidebar = ({ currentPath, setOpen }) => {
         }`}
       >
         <SettingsIcon className="h-5 w-5" />
-        <span>Settings</span>
+        <span>设置</span>
       </button>
     </div>
   )
