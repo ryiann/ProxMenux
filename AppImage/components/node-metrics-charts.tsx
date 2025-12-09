@@ -97,7 +97,7 @@ export function NodeMetricsCharts() {
 
       if (!result.data || !Array.isArray(result.data)) {
         console.error("[v0] Invalid data format - data is not an array:", result)
-        throw new Error("Invalid data format received from server")
+        throw new Error("从服务器接收的数据格式无效")
       }
 
       if (result.data.length === 0) {
@@ -169,7 +169,7 @@ export function NodeMetricsCharts() {
       console.error("[v0] Error fetching node metrics:", err)
       console.error("[v0] Error message:", err.message)
       console.error("[v0] Error stack:", err.stack)
-      setError(err.message || "Error loading metrics")
+      setError(err.message || "加载指标时出错")
     } finally {
       console.log("[v0] fetchMetrics finally block - setting loading to false")
       setLoading(false)
@@ -242,7 +242,7 @@ export function NodeMetricsCharts() {
         <Card className="bg-card border-border">
           <CardContent className="p-6">
             <div className="flex flex-col items-center justify-center h-[300px] gap-2">
-              <p className="text-muted-foreground text-sm">Metrics data not available yet</p>
+              <p className="text-muted-foreground text-sm">指标数据暂不可用</p>
               <p className="text-xs text-red-500">{error}</p>
             </div>
           </CardContent>
@@ -250,7 +250,7 @@ export function NodeMetricsCharts() {
         <Card className="bg-card border-border">
           <CardContent className="p-6">
             <div className="flex flex-col items-center justify-center h-[300px] gap-2">
-              <p className="text-muted-foreground text-sm">Metrics data not available yet</p>
+              <p className="text-muted-foreground text-sm">指标数据暂不可用</p>
               <p className="text-xs text-red-500">{error}</p>
             </div>
           </CardContent>
@@ -266,14 +266,14 @@ export function NodeMetricsCharts() {
         <Card className="bg-card border-border">
           <CardContent className="p-6">
             <div className="flex items-center justify-center h-[300px]">
-              <p className="text-muted-foreground text-sm">No metrics data available</p>
+              <p className="text-muted-foreground text-sm">无可用指标数据</p>
             </div>
           </CardContent>
         </Card>
         <Card className="bg-card border-border">
           <CardContent className="p-6">
             <div className="flex items-center justify-center h-[300px]">
-              <p className="text-muted-foreground text-sm">No metrics data available</p>
+              <p className="text-muted-foreground text-sm">无可用指标数据</p>
             </div>
           </CardContent>
         </Card>
@@ -308,7 +308,7 @@ export function NodeMetricsCharts() {
           <CardHeader className="px-4 md:px-6">
             <CardTitle className="text-foreground flex items-center">
               <TrendingUp className="h-5 w-5 mr-2" />
-              CPU Usage & Load Average
+              CPU 使用率和平均负载
             </CardTitle>
           </CardHeader>
           <CardContent className="px-0 md:px-6">
@@ -380,7 +380,7 @@ export function NodeMetricsCharts() {
           <CardHeader className="px-4 md:px-6">
             <CardTitle className="text-foreground flex items-center">
               <MemoryStick className="h-5 w-5 mr-2" />
-              Memory Usage
+              内存使用情况
             </CardTitle>
           </CardHeader>
           <CardContent className="px-0 pr-2 md:px-6">
