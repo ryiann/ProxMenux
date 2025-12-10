@@ -136,15 +136,15 @@ export function StorageOverview() {
       case "healthy":
       case "passed":
       case "online":
-        return <Badge className="bg-green-500/10 text-green-500 border-green-500/20">Healthy</Badge>
+        return <Badge className="bg-green-500/10 text-green-500 border-green-500/20">健康</Badge>
       case "warning":
-        return <Badge className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20">Warning</Badge>
+        return <Badge className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20">警告</Badge>
       case "critical":
       case "failed":
       case "degraded":
-        return <Badge className="bg-red-500/10 text-red-500 border-red-500/20">Critical</Badge>
+        return <Badge className="bg-red-500/10 text-red-500 border-red-500/20">严重</Badge>
       default:
-        return <Badge className="bg-gray-500/10 text-gray-500 border-gray-500/20">Unknown</Badge>
+        return <Badge className="bg-gray-500/10 text-gray-500 border-gray-500/20">未知</Badge>
     }
   }
 
@@ -189,9 +189,9 @@ export function StorageOverview() {
     const years = Math.floor(hours / 8760)
     const days = Math.floor((hours % 8760) / 24)
     if (years > 0) {
-      return `${years}y ${days}d`
+      return `${years}年 ${days}天`
     }
-    return `${days}d`
+    return `${days}天`
   }
 
   const formatRotationRate = (rpm: number | undefined) => {
@@ -271,19 +271,19 @@ export function StorageOverview() {
     const diskType = getDiskType(disk.name, disk.rotation_rate)
 
     if (diskType === "NVMe" && disk.percentage_used !== undefined && disk.percentage_used !== null) {
-      return { value: disk.percentage_used, label: "Percentage Used" }
+      return { value: disk.percentage_used, label: "已用百分比" }
     }
 
     if (diskType === "SSD") {
       // Prioridad: Media Wearout Indicator > Wear Leveling Count > SSD Life Left
       if (disk.media_wearout_indicator !== undefined && disk.media_wearout_indicator !== null) {
-        return { value: disk.media_wearout_indicator, label: "Media Wearout" }
+        return { value: disk.media_wearout_indicator, label: "介质磨损" }
       }
       if (disk.wear_leveling_count !== undefined && disk.wear_leveling_count !== null) {
-        return { value: disk.wear_leveling_count, label: "Wear Level" }
+        return { value: disk.wear_leveling_count, label: "磨损均衡" }
       }
       if (disk.ssd_life_left !== undefined && disk.ssd_life_left !== null) {
-        return { value: 100 - disk.ssd_life_left, label: "Life Used" }
+        return { value: 100 - disk.ssd_life_left, label: "寿命已用" }
       }
     }
 
@@ -319,10 +319,10 @@ export function StorageOverview() {
 
     if (remainingYears < 1) {
       const remainingMonths = Math.round(remainingYears * 12)
-      return `~${remainingMonths} months`
+      return `~${remainingMonths} 个月`
     }
 
-    return `~${remainingYears.toFixed(1)} years`
+    return `~${remainingYears.toFixed(1)} 年`
   }
 
   const getDiskHealthBreakdown = () => {
@@ -477,7 +477,7 @@ export function StorageOverview() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-muted-foreground">Loading storage information...</div>
+        <div className="text-muted-foreground">正在加载存储信息...</div>
       </div>
     )
   }
@@ -485,7 +485,7 @@ export function StorageOverview() {
   if (!storageData || storageData.error) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-red-500">Error loading storage data: {storageData?.error || "Unknown error"}</div>
+        <div className="text-red-500">加载存储数据时出错: {storageData?.error || "未知错误"}</div>
       </div>
     )
   }
@@ -496,25 +496,25 @@ export function StorageOverview() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Storage</CardTitle>
+            <CardTitle className="text-sm font-medium">总存储</CardTitle>
             <HardDrive className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-xl lg:text-2xl font-bold">{storageData.total.toFixed(1)} TB</div>
-            <p className="text-xs text-muted-foreground mt-1">{storageData.disk_count} physical disks</p>
+            <p className="text-xs text-muted-foreground mt-1">{storageData.disk_count} 个物理磁盘</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Local Used</CardTitle>
+            <CardTitle className="text-sm font-medium">本地已用</CardTitle>
             <Database className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-xl lg:text-2xl font-bold">{formatStorage(totalLocalUsed)}</div>
             <p className="text-xs mt-1">
               <span className={getUsageColor(Number.parseFloat(localUsagePercent))}>{localUsagePercent}%</span>
-              <span className="text-muted-foreground"> of </span>
+              <span className="text-muted-foreground"> / </span>
               <span className="text-green-500">{formatStorage(totalLocalCapacity)}</span>
             </p>
           </CardContent>
@@ -522,12 +522,12 @@ export function StorageOverview() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Remote Used</CardTitle>
+            <CardTitle className="text-sm font-medium">远程已用</CardTitle>
             <Archive className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-xl lg:text-2xl font-bold">
-              {remoteStorageCount > 0 ? formatStorage(totalRemoteUsed) : "None"}
+              {remoteStorageCount > 0 ? formatStorage(totalRemoteUsed) : "无"}
             </div>
             <p className="text-xs mt-1">
               {remoteStorageCount > 0 ? (
@@ -537,7 +537,7 @@ export function StorageOverview() {
                   <span className="text-green-500">{formatStorage(totalRemoteCapacity)}</span>
                 </>
               ) : (
-                <span className="text-muted-foreground">No remote storage</span>
+                <span className="text-muted-foreground">无远程存储</span>
               )}
             </p>
           </CardContent>
@@ -545,11 +545,11 @@ export function StorageOverview() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Physical Disks</CardTitle>
+            <CardTitle className="text-sm font-medium">物理磁盘</CardTitle>
             <HardDrive className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl lg:text-2xl font-bold">{storageData.disk_count} disks</div>
+            <div className="text-xl lg:text-2xl font-bold">{storageData.disk_count} 个磁盘</div>
             <div className="space-y-1 mt-1">
               <p className="text-xs">
                 {diskTypesBreakdown.nvme > 0 && <span className="text-purple-500">{diskTypesBreakdown.nvme} NVMe</span>}
@@ -567,17 +567,17 @@ export function StorageOverview() {
                 )}
               </p>
               <p className="text-xs">
-                <span className="text-green-500">{diskHealthBreakdown.normal} normal</span>
+                <span className="text-green-500">{diskHealthBreakdown.normal} 正常</span>
                 {diskHealthBreakdown.warning > 0 && (
                   <>
                     {", "}
-                    <span className="text-yellow-500">{diskHealthBreakdown.warning} warning</span>
+                    <span className="text-yellow-500">{diskHealthBreakdown.warning} 警告</span>
                   </>
                 )}
                 {diskHealthBreakdown.critical > 0 && (
                   <>
                     {", "}
-                    <span className="text-red-500">{diskHealthBreakdown.critical} critical</span>
+                    <span className="text-red-500">{diskHealthBreakdown.critical} 严重</span>
                   </>
                 )}
               </p>
@@ -591,7 +591,7 @@ export function StorageOverview() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Database className="h-5 w-5" />
-              Proxmox Storage
+              Proxmox 存储
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -651,11 +651,11 @@ export function StorageOverview() {
                       />
                       <div className="grid grid-cols-3 gap-4 text-sm">
                         <div>
-                          <p className="text-muted-foreground">Total</p>
+                          <p className="text-muted-foreground">总计</p>
                           <p className="font-medium">{formatStorage(storage.total)}</p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Used</p>
+                          <p className="text-muted-foreground">已用</p>
                           <p
                             className={`font-medium ${
                               storage.percent > 90
@@ -669,7 +669,7 @@ export function StorageOverview() {
                           </p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Available</p>
+                          <p className="text-muted-foreground">可用</p>
                           <p className="font-medium text-green-400">{formatStorage(storage.available)}</p>
                         </div>
                       </div>
@@ -687,7 +687,7 @@ export function StorageOverview() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Database className="h-5 w-5" />
-              ZFS Pools
+              ZFS 存储池
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -703,15 +703,15 @@ export function StorageOverview() {
                   </div>
                   <div className="grid grid-cols-3 gap-4 text-sm">
                     <div>
-                      <p className="text-sm text-muted-foreground">Size</p>
+                      <p className="text-sm text-muted-foreground">大小</p>
                       <p className="font-medium">{pool.size}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Allocated</p>
+                      <p className="text-sm text-muted-foreground">已分配</p>
                       <p className="font-medium">{pool.allocated}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Free</p>
+                      <p className="text-sm text-muted-foreground">可用</p>
                       <p className="font-medium">{pool.free}</p>
                     </div>
                   </div>
@@ -727,7 +727,7 @@ export function StorageOverview() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <HardDrive className="h-5 w-5" />
-            Physical Disks & SMART Status
+            物理磁盘 & SMART 状态
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -774,25 +774,25 @@ export function StorageOverview() {
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     {disk.size_formatted && (
                       <div>
-                        <p className="text-sm text-muted-foreground">Size</p>
+                        <p className="text-sm text-muted-foreground">大小</p>
                         <p className="font-medium">{disk.size_formatted}</p>
                       </div>
                     )}
                     {disk.smart_status && disk.smart_status !== "unknown" && (
                       <div>
-                        <p className="text-sm text-muted-foreground">SMART Status</p>
+                        <p className="text-sm text-muted-foreground">SMART 状态</p>
                         <p className="font-medium capitalize">{disk.smart_status}</p>
                       </div>
                     )}
                     {disk.power_on_hours !== undefined && disk.power_on_hours > 0 && (
                       <div>
-                        <p className="text-sm text-muted-foreground">Power On Time</p>
+                        <p className="text-sm text-muted-foreground">通电时间</p>
                         <p className="font-medium">{formatHours(disk.power_on_hours)}</p>
                       </div>
                     )}
                     {disk.serial && disk.serial !== "Unknown" && (
                       <div>
-                        <p className="text-sm text-muted-foreground">Serial</p>
+                        <p className="text-sm text-muted-foreground">序列号</p>
                         <p className="font-medium text-xs">{disk.serial}</p>
                       </div>
                     )}
@@ -839,25 +839,25 @@ export function StorageOverview() {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     {disk.size_formatted && (
                       <div>
-                        <p className="text-sm text-muted-foreground">Size</p>
+                        <p className="text-sm text-muted-foreground">大小</p>
                         <p className="font-medium">{disk.size_formatted}</p>
                       </div>
                     )}
                     {disk.smart_status && disk.smart_status !== "unknown" && (
                       <div>
-                        <p className="text-sm text-muted-foreground">SMART Status</p>
+                        <p className="text-sm text-muted-foreground">SMART 状态</p>
                         <p className="font-medium capitalize">{disk.smart_status}</p>
                       </div>
                     )}
                     {disk.power_on_hours !== undefined && disk.power_on_hours > 0 && (
                       <div>
-                        <p className="text-sm text-muted-foreground">Power On Time</p>
+                        <p className="text-sm text-muted-foreground">通电时间</p>
                         <p className="font-medium">{formatHours(disk.power_on_hours)}</p>
                       </div>
                     )}
                     {disk.serial && disk.serial !== "Unknown" && (
                       <div>
-                        <p className="text-sm text-muted-foreground">Serial</p>
+                        <p className="text-sm text-muted-foreground">序列号</p>
                         <p className="font-medium text-xs">{disk.serial}</p>
                       </div>
                     )}
@@ -875,27 +875,27 @@ export function StorageOverview() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <HardDrive className="h-5 w-5" />
-              Disk Details: /dev/{selectedDisk?.name}
+              磁盘详情: /dev/{selectedDisk?.name}
             </DialogTitle>
-            <DialogDescription>Complete SMART information and health status</DialogDescription>
+            <DialogDescription>完整的 SMART 信息和健康状态</DialogDescription>
           </DialogHeader>
           {selectedDisk && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-muted-foreground">Model</p>
+                  <p className="text-sm text-muted-foreground">型号</p>
                   <p className="font-medium">{selectedDisk.model}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Serial Number</p>
+                  <p className="text-sm text-muted-foreground">序列号</p>
                   <p className="font-medium">{selectedDisk.serial}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Capacity</p>
+                  <p className="text-sm text-muted-foreground">容量</p>
                   <p className="font-medium">{selectedDisk.size_formatted}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Health Status</p>
+                  <p className="text-sm text-muted-foreground">健康状态</p>
                   <div className="mt-1">{getHealthBadge(selectedDisk.health)}</div>
                 </div>
               </div>
@@ -903,7 +903,7 @@ export function StorageOverview() {
               {/* Wear & Lifetime Section */}
               {getWearIndicator(selectedDisk) && (
                 <div className="border-t pt-4">
-                  <h4 className="font-semibold mb-3">Wear & Lifetime</h4>
+                  <h4 className="font-semibold mb-3">磨损与寿命</h4>
                   <div className="space-y-3">
                     <div>
                       <div className="flex items-center justify-between mb-2">
@@ -920,12 +920,12 @@ export function StorageOverview() {
                     {getEstimatedLifeRemaining(selectedDisk) && (
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-sm text-muted-foreground">Estimated Life Remaining</p>
+                          <p className="text-sm text-muted-foreground">预估剩余寿命</p>
                           <p className="font-medium">{getEstimatedLifeRemaining(selectedDisk)}</p>
                         </div>
                         {selectedDisk.total_lbas_written && selectedDisk.total_lbas_written > 0 && (
                           <div>
-                            <p className="text-sm text-muted-foreground">Total Data Written</p>
+                            <p className="text-sm text-muted-foreground">总写入数据量</p>
                             <p className="font-medium">
                               {selectedDisk.total_lbas_written >= 1024
                                 ? `${(selectedDisk.total_lbas_written / 1024).toFixed(2)} TB`
@@ -940,10 +940,10 @@ export function StorageOverview() {
               )}
 
               <div className="border-t pt-4">
-                <h4 className="font-semibold mb-3">SMART Attributes</h4>
+                <h4 className="font-semibold mb-3">SMART 属性</h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">Temperature</p>
+                    <p className="text-sm text-muted-foreground">温度</p>
                     <p
                       className={`font-medium ${getTempColor(selectedDisk.temperature, selectedDisk.name, selectedDisk.rotation_rate)}`}
                     >
@@ -951,7 +951,7 @@ export function StorageOverview() {
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Power On Hours</p>
+                    <p className="text-sm text-muted-foreground">通电小时数</p>
                     <p className="font-medium">
                       {selectedDisk.power_on_hours && selectedDisk.power_on_hours > 0
                         ? `${selectedDisk.power_on_hours.toLocaleString()}h (${formatHours(selectedDisk.power_on_hours)})`
@@ -959,11 +959,11 @@ export function StorageOverview() {
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Rotation Rate</p>
+                    <p className="text-sm text-muted-foreground">转速</p>
                     <p className="font-medium">{formatRotationRate(selectedDisk.rotation_rate)}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Power Cycles</p>
+                    <p className="text-sm text-muted-foreground">通断电周期</p>
                     <p className="font-medium">
                       {selectedDisk.power_cycles && selectedDisk.power_cycles > 0
                         ? selectedDisk.power_cycles.toLocaleString()
@@ -971,11 +971,11 @@ export function StorageOverview() {
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">SMART Status</p>
+                    <p className="text-sm text-muted-foreground">SMART 状态</p>
                     <p className="font-medium capitalize">{selectedDisk.smart_status}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Reallocated Sectors</p>
+                    <p className="text-sm text-muted-foreground">重分配扇区</p>
                     <p
                       className={`font-medium ${selectedDisk.reallocated_sectors && selectedDisk.reallocated_sectors > 0 ? "text-yellow-500" : ""}`}
                     >
@@ -983,7 +983,7 @@ export function StorageOverview() {
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Pending Sectors</p>
+                    <p className="text-sm text-muted-foreground">待处理扇区</p>
                     <p
                       className={`font-medium ${selectedDisk.pending_sectors && selectedDisk.pending_sectors > 0 ? "text-yellow-500" : ""}`}
                     >
@@ -991,7 +991,7 @@ export function StorageOverview() {
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">CRC Errors</p>
+                    <p className="text-sm text-muted-foreground">CRC 错误</p>
                     <p
                       className={`font-medium ${selectedDisk.crc_errors && selectedDisk.crc_errors > 0 ? "text-yellow-500" : ""}`}
                     >
