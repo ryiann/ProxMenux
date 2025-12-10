@@ -332,7 +332,7 @@ export function ProxmoxDashboard() {
                 <p className="text-xs md:text-sm text-muted-foreground">Proxmox System Dashboard</p>
                 <div className="lg:hidden flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
                   <Server className="h-3 w-3" />
-                  <span className="truncate">Node: {systemStatus.serverName}</span>
+                  <span className="truncate">节点: {systemStatus.serverName}</span>
                 </div>
               </div>
             </div>
@@ -348,11 +348,17 @@ export function ProxmoxDashboard() {
 
               <Badge variant="outline" className={statusColor}>
                 {statusIcon}
-                <span className="ml-1 capitalize">{systemStatus.status}</span>
+                <span className="ml-1 capitalize">
+                  {systemStatus.status === "healthy"
+                    ? "健康"
+                    : systemStatus.status === "warning"
+                        ? "警告"
+                        : "严重"}
+                </span>
               </Badge>
 
               <div className="text-sm text-muted-foreground whitespace-nowrap">
-                Uptime: {systemStatus.uptime || "N/A"}
+                运行时间: {systemStatus.uptime || "N/A"}
               </div>
 
               <Button
@@ -366,7 +372,7 @@ export function ProxmoxDashboard() {
                 className="border-border/50 bg-transparent hover:bg-secondary"
               >
                 <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
-                Refresh
+                刷新
               </Button>
 
               <div onClick={(e) => e.stopPropagation()}>
@@ -378,7 +384,13 @@ export function ProxmoxDashboard() {
             <div className="flex lg:hidden items-center gap-2">
               <Badge variant="outline" className={`${statusColor} text-xs px-2`}>
                 {statusIcon}
-                <span className="ml-1 capitalize hidden sm:inline">{systemStatus.status}</span>
+                <span className="ml-1 capitalize hidden sm:inline">
+                  {systemStatus.status === "healthy"
+                      ? "健康"
+                      : systemStatus.status === "warning"
+                          ? "警告"
+                          : "严重"}
+                </span>
               </Badge>
 
               <Button
@@ -402,7 +414,7 @@ export function ProxmoxDashboard() {
 
           {/* Mobile Server Info */}
           <div className="lg:hidden mt-2 flex items-center justify-end text-xs text-muted-foreground">
-            <span className="whitespace-nowrap">Uptime: {systemStatus.uptime || "N/A"}</span>
+            <span className="whitespace-nowrap">运行时间: {systemStatus.uptime || "N/A"}</span>
           </div>
         </div>
       </header>
