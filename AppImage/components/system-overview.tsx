@@ -426,7 +426,7 @@ export function SystemOverview() {
           <CardHeader>
             <CardTitle className="text-foreground flex items-center">
               <Server className="h-5 w-5 mr-2" />
-              运行中的虚拟机与LXC容器
+              运行中的虚拟机与容器
             </CardTitle>
           </CardHeader>
           <CardContent>
