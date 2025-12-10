@@ -252,23 +252,23 @@ export function ProxmoxDashboard() {
   const getActiveTabLabel = () => {
     switch (activeTab) {
       case "overview":
-        return "Overview"
+        return "概览"
       case "storage":
-        return "Storage"
+        return "存储"
       case "network":
-        return "Network"
+        return "网络"
       case "vms":
-        return "VMs & LXCs"
+        return "虚拟机 & LXC容器"
       case "hardware":
-        return "Hardware"
+        return "硬件"
       case "terminal":
-        return "Terminal"
+        return "终端"
       case "logs":
-        return "System Logs"
+        return "系统日志"
       case "settings":
-        return "Settings"
+        return "设置"
       default:
-        return "Navigation Menu"
+        return "导航菜单"
     }
   }
 
@@ -421,49 +421,49 @@ export function ProxmoxDashboard() {
                 value="overview"
                 className="data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:rounded-md"
               >
-                Overview
+                概览
               </TabsTrigger>
               <TabsTrigger
                 value="storage"
                 className="data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:rounded-md"
               >
-                Storage
+                存储
               </TabsTrigger>
               <TabsTrigger
                 value="network"
                 className="data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:rounded-md"
               >
-                Network
+                网络
               </TabsTrigger>
               <TabsTrigger
                 value="vms"
                 className="data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:rounded-md"
               >
-                VMs & LXCs
+                虚拟机 & LXC容器
               </TabsTrigger>
               <TabsTrigger
                 value="hardware"
                 className="data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:rounded-md"
               >
-                Hardware
+                硬件
               </TabsTrigger>
               <TabsTrigger
                 value="logs"
                 className="data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:rounded-md"
               >
-                System Logs
+                系统日志
               </TabsTrigger>
               <TabsTrigger
                 value="terminal"
                 className="data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:rounded-md"
               >
-                Terminal
+                终端
               </TabsTrigger>
               <TabsTrigger
                 value="settings"
                 className="data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:rounded-md"
               >
-                Settings
+                设置
               </TabsTrigger>
             </TabsList>
 
@@ -496,7 +496,7 @@ export function ProxmoxDashboard() {
                     }`}
                   >
                     <LayoutDashboard className="h-5 w-5" />
-                    <span>Overview</span>
+                    <span>概览</span>
                   </Button>
                   <Button
                     variant="ghost"
@@ -511,7 +511,7 @@ export function ProxmoxDashboard() {
                     }`}
                   >
                     <HardDrive className="h-5 w-5" />
-                    <span>Storage</span>
+                    <span>存储</span>
                   </Button>
                   <Button
                     variant="ghost"
@@ -526,7 +526,7 @@ export function ProxmoxDashboard() {
                     }`}
                   >
                     <NetworkIcon className="h-5 w-5" />
-                    <span>Network</span>
+                    <span>网络</span>
                   </Button>
                   <Button
                     variant="ghost"
@@ -541,7 +541,7 @@ export function ProxmoxDashboard() {
                     }`}
                   >
                     <Box className="h-5 w-5" />
-                    <span>VMs & LXCs</span>
+                    <span>虚拟机 & LXC容器</span>
                   </Button>
                   <Button
                     variant="ghost"
@@ -556,7 +556,7 @@ export function ProxmoxDashboard() {
                     }`}
                   >
                     <Cpu className="h-5 w-5" />
-                    <span>Hardware</span>
+                    <span>硬件</span>
                   </Button>
                   <Button
                     variant="ghost"
@@ -571,7 +571,7 @@ export function ProxmoxDashboard() {
                     }`}
                   >
                     <FileText className="h-5 w-5" />
-                    <span>System Logs</span>
+                    <span>系统日志</span>
                   </Button>
                   <Button
                     variant="ghost"
@@ -586,7 +586,7 @@ export function ProxmoxDashboard() {
                     }`}
                   >
                     <Terminal className="h-5 w-5" />
-                    <span>Terminal</span>
+                    <span>终端</span>
                   </Button>
                   <Button
                     variant="ghost"
@@ -601,7 +601,7 @@ export function ProxmoxDashboard() {
                     }`}
                   >
                     <SettingsIcon className="h-5 w-5" />
-                    <span>Settings</span>
+                    <span>设置</span>
                   </Button>
                 </div>
               </SheetContent>
