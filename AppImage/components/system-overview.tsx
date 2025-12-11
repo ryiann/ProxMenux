@@ -298,26 +298,30 @@ export function SystemOverview() {
   }
 
   const getTemperatureStatus = (temp: number) => {
-    if (temp === 0) return { status: "N/A", color: "bg-gray-500/10 text-gray-500 border-gray-500/20" }
-    if (temp < 60) return { status: "Normal", color: "bg-green-500/10 text-green-500 border-green-500/20" }
-    if (temp < 75) return { status: "Warm", color: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" }
-    return { status: "Hot", color: "bg-red-500/10 text-red-500 border-red-500/20" }
+    if (temp === 0) return { status: "不可用", color: "bg-gray-500/10 text-gray-500 border-gray-500/20" }
+    if (temp < 60) return { status: "正常", color: "bg-green-500/10 text-green-500 border-green-500/20" }
+    if (temp < 75) return { status: "温热", color: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" }
+    return { status: "过热", color: "bg-red-500/10 text-red-500 border-red-500/20" }
   }
 
   const formatUptime = (seconds: number) => {
-    if (!seconds || seconds === 0) return "Stopped"
+    if (!seconds || seconds === 0) return "已停止"
     const days = Math.floor(seconds / 86400)
     const hours = Math.floor((seconds % 86400) / 3600)
     const minutes = Math.floor((seconds % 3600) / 60)
 
-    if (days > 0) return `${days}d ${hours}h`
-    if (hours > 0) return `${hours}h ${minutes}m`
-    return `${minutes}m`
+    if (days > 0) return `${days}天 ${hours}小时`
+    if (hours > 0) return `${hours}小时 ${minutes}分钟`
+    return `${minutes}分钟`
   }
 
-  const formatBytes = (bytes: number) => {
-    return (bytes / 1024 ** 3).toFixed(2)
-  }
+  const formatStorageBytes = (bytes: number): string => {
+    if (bytes === 0) return "0 B";
+    const k = 1024;
+    const sizes = ["B", "KB", "MB", "GB", "TB", "PB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+  };
 
   const tempStatus = getTemperatureStatus(systemData.temperature)
 
@@ -339,11 +343,11 @@ export function SystemOverview() {
 
   const getLoadStatus = (load: number, cores: number) => {
     if (load < cores) {
-      return { status: "Normal", color: "bg-green-500/10 text-green-500 border-green-500/20" }
+      return { status: "正常", color: "bg-green-500/10 text-green-500 border-green-500/20" }
     } else if (load < cores * 1.5) {
-      return { status: "Moderate", color: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" }
+      return { status: "中等", color: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" }
     } else {
-      return { status: "High", color: "bg-red-500/10 text-red-500 border-red-500/20" }
+      return { status: "偏高", color: "bg-red-500/10 text-red-500 border-red-500/20" }
     }
   }
 
@@ -357,7 +361,7 @@ export function SystemOverview() {
   if (vmStats.stopped > 0) {
     systemAlerts.push({
       type: "info",
-      message: `${vmStats.stopped} 个虚拟机已停止`,
+      message: `${vmStats.stopped > 1 ? "s" : ""} 个虚拟机已停止`,
     })
   }
   if (systemData.temperature > 75) {
@@ -378,15 +382,15 @@ export function SystemOverview() {
   const getTimeframeLabel = (timeframe: string): string => {
     switch (timeframe) {
       case "hour":
-        return "1h"
+        return "1小时"
       case "day":
-        return "24h"
+        return "24小时"
       case "week":
-        return "7d"
+        return "7天"
       case "month":
-        return "30d"
+        return "30天"
       case "year":
-        return "1y"
+        return "1年"
       default:
         return timeframe
     }
@@ -508,7 +512,7 @@ export function SystemOverview() {
                       <div className="flex justify-between items-center">
                         <span className="text-sm font-medium text-foreground">节点总容量:</span>
                         <span className="text-lg font-bold text-foreground">
-                          {formatNetworkTraffic(totalCapacity, "Bytes")}
+                          {formatStorageBytes(totalCapacity)}
                         </span>
                       </div>
                       <Progress
@@ -520,13 +524,13 @@ export function SystemOverview() {
                           <span className="text-xs text-muted-foreground">
                             已使用:{" "}
                             <span className="font-semibold text-foreground">
-                              {formatNetworkTraffic(totalUsed, "Bytes")}
+                              {formatStorageBytes(totalUsed)}
                             </span>
                           </span>
                           <span className="text-xs text-muted-foreground">
                             可用:{" "}
                             <span className="font-semibold text-green-500">
-                              {formatNetworkTraffic(totalAvailable, "Bytes")}
+                              {formatStorageBytes(totalAvailable)}
                             </span>
                           </span>
                         </div>
@@ -555,20 +559,20 @@ export function SystemOverview() {
                     <div className="flex justify-between items-center">
                       <span className="text-xs text-muted-foreground">已使用:</span>
                       <span className="text-sm font-semibold text-foreground">
-                        {formatNetworkTraffic(vmLxcStorageUsed, "Bytes")}
+                        {formatStorageBytes(vmLxcStorageUsed)}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-xs text-muted-foreground">可用:</span>
                       <span className="text-sm font-semibold text-green-500">
-                        {formatNetworkTraffic(vmLxcStorageAvailable, "Bytes")}
+                        {formatStorageBytes(vmLxcStorageAvailable)}
                       </span>
                     </div>
                     <Progress value={vmLxcStoragePercent} className="mt-2 [&>div]:bg-blue-500" />
                     <div className="flex justify-between items-center mt-1">
                       <span className="text-xs text-muted-foreground">
-                        {formatNetworkTraffic(vmLxcStorageUsed, "Bytes")} /{" "}
-                        {formatNetworkTraffic(vmLxcStorageTotal, "Bytes")}
+                        {formatStorageBytes(vmLxcStorageUsed)} /{" "}
+                        {formatStorageBytes(vmLxcStorageTotal)}
                       </span>
                       <span className="text-xs text-muted-foreground">{vmLxcStoragePercent.toFixed(1)}%</span>
                     </div>
@@ -591,20 +595,20 @@ export function SystemOverview() {
                     <div className="flex justify-between items-center">
                       <span className="text-xs text-muted-foreground">已使用:</span>
                       <span className="text-sm font-semibold text-foreground">
-                        {formatNetworkTraffic(localStorage.used, "Bytes")}
+                        {formatStorageBytes(localStorage.used)}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-xs text-muted-foreground">可用:</span>
                       <span className="text-sm font-semibold text-green-500">
-                        {formatNetworkTraffic(localStorage.available, "Bytes")}
+                        {formatStorageBytes(localStorage.available)}
                       </span>
                     </div>
                     <Progress value={localStorage.percent} className="mt-2 [&>div]:bg-purple-500" />
                     <div className="flex justify-between items-center mt-1">
                       <span className="text-xs text-muted-foreground">
-                        {formatNetworkTraffic(localStorage.used, "Bytes")} /{" "}
-                        {formatNetworkTraffic(localStorage.total, "Bytes")}
+                        {formatStorageBytes(localStorage.used)} /{" "}
+                        {formatStorageBytes(localStorage.total)}
                       </span>
                       <span className="text-xs text-muted-foreground">{localStorage.percent.toFixed(1)}%</span>
                     </div>
