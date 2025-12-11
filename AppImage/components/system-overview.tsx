@@ -184,7 +184,7 @@ export function SystemOverview() {
         fetchSystemData().finally(() => setLoadingStates((prev) => ({ ...prev, system: false }))),
         fetchVMData().finally(() => setLoadingStates((prev) => ({ ...prev, vms: false }))),
         Promise.all([fetchStorageData(), fetchProxmoxStorageData()]).finally(() =>
-          setLoadingStates((prev) => ({ ...prev, storage: false })),
+            setLoadingStates((prev) => ({ ...prev, storage: false })),
         ),
         fetchNetworkData().finally(() => setLoadingStates((prev) => ({ ...prev, network: false }))),
       ])
@@ -252,40 +252,40 @@ export function SystemOverview() {
 
   if (!hasAttemptedLoad || loadingStates.system) {
     return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, i) => (
-            <Card key={i} className="bg-card border-border animate-pulse">
-              <CardContent className="p-6">
-                <div className="h-4 bg-muted rounded w-1/2 mb-4"></div>
-                <div className="h-8 bg-muted rounded w-3/4 mb-2"></div>
-                <div className="h-2 bg-muted rounded w-full mb-2"></div>
-                <div className="h-3 bg-muted rounded w-2/3"></div>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+                <Card key={i} className="bg-card border-border animate-pulse">
+                  <CardContent className="p-6">
+                    <div className="h-4 bg-muted rounded w-1/2 mb-4"></div>
+                    <div className="h-8 bg-muted rounded w-3/4 mb-2"></div>
+                    <div className="h-2 bg-muted rounded w-full mb-2"></div>
+                    <div className="h-3 bg-muted rounded w-2/3"></div>
+                  </CardContent>
+                </Card>
+            ))}
+          </div>
         </div>
-      </div>
     )
   }
 
   if (error || !systemData) {
     return (
-      <div className="space-y-6">
-        <Card className="bg-red-500/10 border-red-500/20">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3 text-red-600">
-              <AlertCircle className="h-6 w-6" />
-              <div>
-                <div className="font-semibold text-lg mb-1">Flask 服务不可用</div>
-                <div className="text-sm">
-                  {error || "无法连接到 Flask 服务器。请确保服务正在运行并重试。"}
+        <div className="space-y-6">
+          <Card className="bg-red-500/10 border-red-500/20">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3 text-red-600">
+                <AlertCircle className="h-6 w-6" />
+                <div>
+                  <div className="font-semibold text-lg mb-1">Flask 服务不可用</div>
+                  <div className="text-sm">
+                    {error || "无法连接到 Flask 服务器。请确保服务正在运行并重试。"}
+                  </div>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </div>
     )
   }
 
@@ -298,42 +298,38 @@ export function SystemOverview() {
   }
 
   const getTemperatureStatus = (temp: number) => {
-    if (temp === 0) return { status: "不可用", color: "bg-gray-500/10 text-gray-500 border-gray-500/20" }
-    if (temp < 60) return { status: "正常", color: "bg-green-500/10 text-green-500 border-green-500/20" }
-    if (temp < 75) return { status: "温热", color: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" }
-    return { status: "过热", color: "bg-red-500/10 text-red-500 border-red-500/20" }
+    if (temp === 0) return { status: "N/A", color: "bg-gray-500/10 text-gray-500 border-gray-500/20" }
+    if (temp < 60) return { status: "Normal", color: "bg-green-500/10 text-green-500 border-green-500/20" }
+    if (temp < 75) return { status: "Warm", color: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" }
+    return { status: "Hot", color: "bg-red-500/10 text-red-500 border-red-500/20" }
   }
 
   const formatUptime = (seconds: number) => {
-    if (!seconds || seconds === 0) return "已停止"
+    if (!seconds || seconds === 0) return "Stopped"
     const days = Math.floor(seconds / 86400)
     const hours = Math.floor((seconds % 86400) / 3600)
     const minutes = Math.floor((seconds % 3600) / 60)
 
-    if (days > 0) return `${days}天 ${hours}小时`
-    if (hours > 0) return `${hours}小时 ${minutes}分钟`
-    return `${minutes}分钟`
+    if (days > 0) return `${days}d ${hours}h`
+    if (hours > 0) return `${hours}h ${minutes}m`
+    return `${minutes}m`
   }
 
-  const formatStorageBytes = (bytes: number): string => {
-    if (bytes === 0) return "0 B";
-    const k = 1024;
-    const sizes = ["B", "KB", "MB", "GB", "TB", "PB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
-  };
+  const formatBytes = (bytes: number) => {
+    return (bytes / 1024 ** 3).toFixed(2)
+  }
 
   const tempStatus = getTemperatureStatus(systemData.temperature)
 
   const localStorage = proxmoxStorageData?.storage.find((s) => s.name === "local")
 
   const vmLxcStorages = proxmoxStorageData?.storage.filter(
-    (s) =>
-      (s.type === "lvm" || s.type === "lvmthin" || s.type === "zfspool" || s.type === "btrfs" || s.type === "dir") &&
-      s.type !== "nfs" &&
-      s.type !== "cifs" &&
-      s.type !== "iscsi" &&
-      s.name !== "local",
+      (s) =>
+          (s.type === "lvm" || s.type === "lvmthin" || s.type === "zfspool" || s.type === "btrfs" || s.type === "dir") &&
+          s.type !== "nfs" &&
+          s.type !== "cifs" &&
+          s.type !== "iscsi" &&
+          s.name !== "local",
   )
 
   const vmLxcStorageTotal = vmLxcStorages?.reduce((acc, s) => acc + s.total, 0) || 0
@@ -343,11 +339,11 @@ export function SystemOverview() {
 
   const getLoadStatus = (load: number, cores: number) => {
     if (load < cores) {
-      return { status: "正常", color: "bg-green-500/10 text-green-500 border-green-500/20" }
+      return { status: "Normal", color: "bg-green-500/10 text-green-500 border-green-500/20" }
     } else if (load < cores * 1.5) {
-      return { status: "中等", color: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" }
+      return { status: "Moderate", color: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" }
     } else {
-      return { status: "偏高", color: "bg-red-500/10 text-red-500 border-red-500/20" }
+      return { status: "High", color: "bg-red-500/10 text-red-500 border-red-500/20" }
     }
   }
 
@@ -361,7 +357,7 @@ export function SystemOverview() {
   if (vmStats.stopped > 0) {
     systemAlerts.push({
       type: "info",
-      message: `${vmStats.stopped > 1 ? "s" : ""} 个虚拟机已停止`,
+      message: `${vmStats.stopped} 个虚拟机已停止`,
     })
   }
   if (systemData.temperature > 75) {
@@ -382,427 +378,427 @@ export function SystemOverview() {
   const getTimeframeLabel = (timeframe: string): string => {
     switch (timeframe) {
       case "hour":
-        return "1小时"
+        return "1h"
       case "day":
-        return "24小时"
+        return "24h"
       case "week":
-        return "7天"
+        return "7d"
       case "month":
-        return "30天"
+        return "30d"
       case "year":
-        return "1年"
+        return "1y"
       default:
         return timeframe
     }
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
-        <Card className="bg-card border-border">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">CPU 使用率</CardTitle>
-            <Cpu className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl lg:text-2xl font-bold text-foreground">{systemData.cpu_usage}%</div>
-            <Progress value={systemData.cpu_usage} className="mt-2 [&>div]:bg-blue-500" />
-            <p className="text-xs text-muted-foreground mt-2">实时使用率</p>
-          </CardContent>
-        </Card>
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
+          <Card className="bg-card border-border">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">CPU 使用率</CardTitle>
+              <Cpu className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-xl lg:text-2xl font-bold text-foreground">{systemData.cpu_usage}%</div>
+              <Progress value={systemData.cpu_usage} className="mt-2 [&>div]:bg-blue-500" />
+              <p className="text-xs text-muted-foreground mt-2">实时使用率</p>
+            </CardContent>
+          </Card>
 
-        <Card className="bg-card border-border">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">内存使用率</CardTitle>
-            <MemoryStick className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl lg:text-2xl font-bold text-foreground">{systemData.memory_used.toFixed(1)} GB</div>
-            <Progress value={systemData.memory_usage} className="mt-2 [&>div]:bg-blue-500" />
-            <p className="text-xs text-muted-foreground mt-2">
-              <span className="text-green-500 font-medium">{systemData.memory_usage.toFixed(1)}%</span> of{" "}
-              {systemData.memory_total} GB
-            </p>
-          </CardContent>
-        </Card>
+          <Card className="bg-card border-border">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">内存使用率</CardTitle>
+              <MemoryStick className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-xl lg:text-2xl font-bold text-foreground">{systemData.memory_used.toFixed(1)} GB</div>
+              <Progress value={systemData.memory_usage} className="mt-2 [&>div]:bg-blue-500" />
+              <p className="text-xs text-muted-foreground mt-2">
+                <span className="text-green-500 font-medium">{systemData.memory_usage.toFixed(1)}%</span> of{" "}
+                {systemData.memory_total} GB
+              </p>
+            </CardContent>
+          </Card>
 
-        <Card className="bg-card border-border">
-          <CardHeader>
-            <CardTitle className="text-foreground flex items-center">
-              <Server className="h-5 w-5 mr-2" />
-              运行中的虚拟机与容器
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loadingStates.vms ? (
-              <div className="space-y-2 animate-pulse">
-                <div className="h-8 bg-muted rounded w-12"></div>
-                <div className="h-5 bg-muted rounded w-24"></div>
-                <div className="h-4 bg-muted rounded w-32"></div>
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle className="text-foreground flex items-center">
+                <Server className="h-5 w-5 mr-2" />
+                运行中的虚拟机与容器
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {loadingStates.vms ? (
+                  <div className="space-y-2 animate-pulse">
+                    <div className="h-8 bg-muted rounded w-12"></div>
+                    <div className="h-5 bg-muted rounded w-24"></div>
+                    <div className="h-4 bg-muted rounded w-32"></div>
+                  </div>
+              ) : (
+                  <>
+                    <div className="text-xl lg:text-2xl font-bold text-foreground">{vmStats.running}</div>
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+                        {vmStats.running} 个运行中
+                      </Badge>
+                      {vmStats.stopped > 0 && (
+                          <Badge variant="outline" className="bg-red-500/10 text-red-500 border-red-500/20">
+                            {vmStats.stopped} 个已停止
+                          </Badge>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      总计: {vmStats.vms} 个虚拟机, {vmStats.lxc} 个LXC容器
+                    </p>
+                  </>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="bg-card border-border">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">温度</CardTitle>
+              <Thermometer className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-xl lg:text-2xl font-bold text-foreground">
+                {systemData.temperature === 0 ? "不可用" : `${systemData.temperature}°C`}
               </div>
-            ) : (
-              <>
-                <div className="text-xl lg:text-2xl font-bold text-foreground">{vmStats.running}</div>
-                <div className="mt-2 flex flex-wrap gap-1">
-                  <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                    {vmStats.running} 个运行中
-                  </Badge>
-                  {vmStats.stopped > 0 && (
-                    <Badge variant="outline" className="bg-red-500/10 text-red-500 border-red-500/20">
-                      {vmStats.stopped} 个已停止
-                    </Badge>
-                  )}
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  总计: {vmStats.vms} 个虚拟机, {vmStats.lxc} 个LXC容器
-                </p>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="bg-card border-border">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">温度</CardTitle>
-            <Thermometer className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl lg:text-2xl font-bold text-foreground">
-              {systemData.temperature === 0 ? "不可用" : `${systemData.temperature}°C`}
-            </div>
-            <div className="flex items-center mt-2">
-              <Badge variant="outline" className={tempStatus.color}>
-                {tempStatus.status}
-              </Badge>
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              {systemData.temperature === 0 ? "无可用传感器" : "实时温度读数"}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <NodeMetricsCharts />
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-card border-border">
-          <CardHeader>
-            <CardTitle className="text-foreground flex items-center">
-              <HardDrive className="h-5 w-5 mr-2" />
-              存储概览
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loadingStates.storage ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-6 bg-muted rounded w-full"></div>
-                <div className="h-4 bg-muted rounded w-3/4"></div>
-                <div className="h-4 bg-muted rounded w-2/3"></div>
+              <div className="flex items-center mt-2">
+                <Badge variant="outline" className={tempStatus.color}>
+                  {tempStatus.status}
+                </Badge>
               </div>
-            ) : storageData ? (
-              <div className="space-y-4">
-                {(() => {
-                  const totalCapacity = (vmLxcStorageTotal || 0) + (localStorage?.total || 0)
-                  const totalUsed = (vmLxcStorageUsed || 0) + (localStorage?.used || 0)
-                  const totalAvailable = (vmLxcStorageAvailable || 0) + (localStorage?.available || 0)
-                  const totalPercent = totalCapacity > 0 ? (totalUsed / totalCapacity) * 100 : 0
+              <p className="text-xs text-muted-foreground mt-2">
+                {systemData.temperature === 0 ? "无可用传感器" : "实时温度读数"}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
 
-                  return totalCapacity > 0 ? (
-                    <div className="space-y-2 pb-4 border-b-2 border-border">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-foreground">节点总容量:</span>
-                        <span className="text-lg font-bold text-foreground">
-                          {formatStorageBytes(totalCapacity)}
+        <NodeMetricsCharts />
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle className="text-foreground flex items-center">
+                <HardDrive className="h-5 w-5 mr-2" />
+                存储概览
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {loadingStates.storage ? (
+                  <div className="space-y-4 animate-pulse">
+                    <div className="h-6 bg-muted rounded w-full"></div>
+                    <div className="h-4 bg-muted rounded w-3/4"></div>
+                    <div className="h-4 bg-muted rounded w-2/3"></div>
+                  </div>
+              ) : storageData ? (
+                  <div className="space-y-4">
+                    {(() => {
+                      const totalCapacity = (vmLxcStorageTotal || 0) + (localStorage?.total || 0)
+                      const totalUsed = (vmLxcStorageUsed || 0) + (localStorage?.used || 0)
+                      const totalAvailable = (vmLxcStorageAvailable || 0) + (localStorage?.available || 0)
+                      const totalPercent = totalCapacity > 0 ? (totalUsed / totalCapacity) * 100 : 0
+
+                      return totalCapacity > 0 ? (
+                          <div className="space-y-2 pb-4 border-b-2 border-border">
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium text-foreground">节点总容量:</span>
+                              <span className="text-lg font-bold text-foreground">
+                          {formatNetworkTraffic(totalCapacity, "Bytes")}
                         </span>
-                      </div>
-                      <Progress
-                        value={totalPercent}
-                        className="mt-2 h-3 [&>div]:bg-gradient-to-r [&>div]:from-blue-500 [&>div]:to-purple-500"
-                      />
-                      <div className="flex justify-between items-center mt-1">
-                        <div className="flex items-center gap-3">
+                            </div>
+                            <Progress
+                                value={totalPercent}
+                                className="mt-2 h-3 [&>div]:bg-gradient-to-r [&>div]:from-blue-500 [&>div]:to-purple-500"
+                            />
+                            <div className="flex justify-between items-center mt-1">
+                              <div className="flex items-center gap-3">
                           <span className="text-xs text-muted-foreground">
                             已使用:{" "}
                             <span className="font-semibold text-foreground">
-                              {formatStorageBytes(totalUsed)}
+                              {formatNetworkTraffic(totalUsed, "Bytes")}
                             </span>
                           </span>
-                          <span className="text-xs text-muted-foreground">
+                                <span className="text-xs text-muted-foreground">
                             可用:{" "}
-                            <span className="font-semibold text-green-500">
-                              {formatStorageBytes(totalAvailable)}
+                                  <span className="font-semibold text-green-500">
+                              {formatNetworkTraffic(totalAvailable, "Bytes")}
                             </span>
                           </span>
-                        </div>
-                        <span className="text-xs font-semibold text-muted-foreground">{totalPercent.toFixed(1)}%</span>
-                      </div>
-                    </div>
-                  ) : null
-                })()}
+                              </div>
+                              <span className="text-xs font-semibold text-muted-foreground">{totalPercent.toFixed(1)}%</span>
+                            </div>
+                          </div>
+                      ) : null
+                    })()}
 
-                <div className="space-y-2 pb-3 border-b border-border">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">总容量:</span>
-                    <span className="text-lg font-semibold text-foreground">{storageData.total} TB</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">物理磁盘:</span>
-                    <span className="text-sm font-semibold text-foreground">
+                    <div className="space-y-2 pb-3 border-b border-border">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">总容量:</span>
+                        <span className="text-lg font-semibold text-foreground">{storageData.total} TB</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">物理磁盘:</span>
+                        <span className="text-sm font-semibold text-foreground">
                       {storageData.disk_count} 块
                     </span>
-                  </div>
-                </div>
-
-                {vmLxcStorages && vmLxcStorages.length > 0 ? (
-                  <div className="space-y-2 pb-3 border-b border-border">
-                    <div className="text-xs font-medium text-muted-foreground mb-2">虚拟机/LXC容器存储</div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-muted-foreground">已使用:</span>
-                      <span className="text-sm font-semibold text-foreground">
-                        {formatStorageBytes(vmLxcStorageUsed)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-muted-foreground">可用:</span>
-                      <span className="text-sm font-semibold text-green-500">
-                        {formatStorageBytes(vmLxcStorageAvailable)}
-                      </span>
-                    </div>
-                    <Progress value={vmLxcStoragePercent} className="mt-2 [&>div]:bg-blue-500" />
-                    <div className="flex justify-between items-center mt-1">
-                      <span className="text-xs text-muted-foreground">
-                        {formatStorageBytes(vmLxcStorageUsed)} /{" "}
-                        {formatStorageBytes(vmLxcStorageTotal)}
-                      </span>
-                      <span className="text-xs text-muted-foreground">{vmLxcStoragePercent.toFixed(1)}%</span>
-                    </div>
-                    {vmLxcStorages.length > 1 && (
-                      <div className="text-xs text-muted-foreground mt-1">
-                        {vmLxcStorages.length} 个存储卷
                       </div>
+                    </div>
+
+                    {vmLxcStorages && vmLxcStorages.length > 0 ? (
+                        <div className="space-y-2 pb-3 border-b border-border">
+                          <div className="text-xs font-medium text-muted-foreground mb-2">虚拟机/LXC容器存储</div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-muted-foreground">已使用:</span>
+                            <span className="text-sm font-semibold text-foreground">
+                        {formatNetworkTraffic(vmLxcStorageUsed, "Bytes")}
+                      </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-muted-foreground">可用:</span>
+                            <span className="text-sm font-semibold text-green-500">
+                        {formatNetworkTraffic(vmLxcStorageAvailable, "Bytes")}
+                      </span>
+                          </div>
+                          <Progress value={vmLxcStoragePercent} className="mt-2 [&>div]:bg-blue-500" />
+                          <div className="flex justify-between items-center mt-1">
+                      <span className="text-xs text-muted-foreground">
+                        {formatNetworkTraffic(vmLxcStorageUsed, "Bytes")} /{" "}
+                        {formatNetworkTraffic(vmLxcStorageTotal, "Bytes")}
+                      </span>
+                            <span className="text-xs text-muted-foreground">{vmLxcStoragePercent.toFixed(1)}%</span>
+                          </div>
+                          {vmLxcStorages.length > 1 && (
+                              <div className="text-xs text-muted-foreground mt-1">
+                                {vmLxcStorages.length} 个存储卷
+                              </div>
+                          )}
+                        </div>
+                    ) : (
+                        <div className="space-y-2 pb-3 border-b border-border">
+                          <div className="text-xs font-medium text-muted-foreground mb-2">虚拟机/LXC容器存储</div>
+                          <div className="text-center py-4 text-muted-foreground text-sm">未配置虚拟机/LXC容器存储</div>
+                        </div>
+                    )}
+
+                    {localStorage && (
+                        <div className="space-y-2">
+                          <div className="text-xs font-medium text-muted-foreground mb-2">本地存储 (系统)</div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-muted-foreground">已使用:</span>
+                            <span className="text-sm font-semibold text-foreground">
+                        {formatNetworkTraffic(localStorage.used, "Bytes")}
+                      </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-muted-foreground">可用:</span>
+                            <span className="text-sm font-semibold text-green-500">
+                        {formatNetworkTraffic(localStorage.available, "Bytes")}
+                      </span>
+                          </div>
+                          <Progress value={localStorage.percent} className="mt-2 [&>div]:bg-purple-500" />
+                          <div className="flex justify-between items-center mt-1">
+                      <span className="text-xs text-muted-foreground">
+                        {formatNetworkTraffic(localStorage.used, "Bytes")} /{" "}
+                        {formatNetworkTraffic(localStorage.total, "Bytes")}
+                      </span>
+                            <span className="text-xs text-muted-foreground">{localStorage.percent.toFixed(1)}%</span>
+                          </div>
+                        </div>
                     )}
                   </div>
-                ) : (
-                  <div className="space-y-2 pb-3 border-b border-border">
-                    <div className="text-xs font-medium text-muted-foreground mb-2">虚拟机/LXC容器存储</div>
-                    <div className="text-center py-4 text-muted-foreground text-sm">未配置虚拟机/LXC容器存储</div>
-                  </div>
-                )}
+              ) : (
+                  <div className="text-center py-8 text-muted-foreground">存储数据不可用</div>
+              )}
+            </CardContent>
+          </Card>
 
-                {localStorage && (
-                  <div className="space-y-2">
-                    <div className="text-xs font-medium text-muted-foreground mb-2">本地存储 (系统)</div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-muted-foreground">已使用:</span>
-                      <span className="text-sm font-semibold text-foreground">
-                        {formatStorageBytes(localStorage.used)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-muted-foreground">可用:</span>
-                      <span className="text-sm font-semibold text-green-500">
-                        {formatStorageBytes(localStorage.available)}
-                      </span>
-                    </div>
-                    <Progress value={localStorage.percent} className="mt-2 [&>div]:bg-purple-500" />
-                    <div className="flex justify-between items-center mt-1">
-                      <span className="text-xs text-muted-foreground">
-                        {formatStorageBytes(localStorage.used)} /{" "}
-                        {formatStorageBytes(localStorage.total)}
-                      </span>
-                      <span className="text-xs text-muted-foreground">{localStorage.percent.toFixed(1)}%</span>
-                    </div>
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle className="text-foreground flex items-center justify-between">
+                <div className="flex items-center">
+                  <Network className="h-5 w-5 mr-2" />
+                  网络概览
+                </div>
+                <Select value={networkTimeframe} onValueChange={setNetworkTimeframe}>
+                  <SelectTrigger className="w-28 h-8 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="hour">1 小时</SelectItem>
+                    <SelectItem value="day">24 小时</SelectItem>
+                    <SelectItem value="week">7 天</SelectItem>
+                    <SelectItem value="month">30 天</SelectItem>
+                    <SelectItem value="year">1 年</SelectItem>
+                  </SelectContent>
+                </Select>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {loadingStates.network ? (
+                  <div className="space-y-4 animate-pulse">
+                    <div className="h-6 bg-muted rounded w-full"></div>
+                    <div className="h-4 bg-muted rounded w-3/4"></div>
+                    <div className="h-4 bg-muted rounded w-2/3"></div>
                   </div>
-                )}
-              </div>
-            ) : (
-              <div className="text-center py-8 text-muted-foreground">存储数据不可用</div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="bg-card border-border">
-          <CardHeader>
-            <CardTitle className="text-foreground flex items-center justify-between">
-              <div className="flex items-center">
-                <Network className="h-5 w-5 mr-2" />
-                网络概览
-              </div>
-              <Select value={networkTimeframe} onValueChange={setNetworkTimeframe}>
-                <SelectTrigger className="w-28 h-8 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="hour">1 小时</SelectItem>
-                  <SelectItem value="day">24 小时</SelectItem>
-                  <SelectItem value="week">7 天</SelectItem>
-                  <SelectItem value="month">30 天</SelectItem>
-                  <SelectItem value="year">1 年</SelectItem>
-                </SelectContent>
-              </Select>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loadingStates.network ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-6 bg-muted rounded w-full"></div>
-                <div className="h-4 bg-muted rounded w-3/4"></div>
-                <div className="h-4 bg-muted rounded w-2/3"></div>
-              </div>
-            ) : networkData ? (
-              <div className="space-y-4">
-                <div className="flex justify-between items-center pb-3 border-b border-border">
-                  <span className="text-sm text-muted-foreground">活动接口:</span>
-                  <span className="text-lg font-semibold text-foreground">
+              ) : networkData ? (
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center pb-3 border-b border-border">
+                      <span className="text-sm text-muted-foreground">活动接口:</span>
+                      <span className="text-lg font-semibold text-foreground">
                     {(networkData.physical_active_count || 0) + (networkData.bridge_active_count || 0)}
                   </span>
-                </div>
-
-                <div className="space-y-2">
-                  {networkData.physical_interfaces && networkData.physical_interfaces.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {networkData.physical_interfaces
-                        .filter((iface) => iface.status === "up")
-                        .map((iface) => (
-                          <Badge
-                            key={iface.name}
-                            variant="outline"
-                            className="bg-blue-500/10 text-blue-500 border-blue-500/20"
-                          >
-                            {iface.name}
-                          </Badge>
-                        ))}
                     </div>
-                  )}
 
-                  {networkData.bridge_interfaces && networkData.bridge_interfaces.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {networkData.bridge_interfaces
-                        .filter((iface) => iface.status === "up")
-                        .map((iface) => (
-                          <Badge
-                            key={iface.name}
-                            variant="outline"
-                            className="bg-green-500/10 text-green-500 border-green-500/20"
-                          >
-                            {iface.name}
-                          </Badge>
-                        ))}
+                    <div className="space-y-2">
+                      {networkData.physical_interfaces && networkData.physical_interfaces.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {networkData.physical_interfaces
+                                .filter((iface) => iface.status === "up")
+                                .map((iface) => (
+                                    <Badge
+                                        key={iface.name}
+                                        variant="outline"
+                                        className="bg-blue-500/10 text-blue-500 border-blue-500/20"
+                                    >
+                                      {iface.name}
+                                    </Badge>
+                                ))}
+                          </div>
+                      )}
+
+                      {networkData.bridge_interfaces && networkData.bridge_interfaces.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {networkData.bridge_interfaces
+                                .filter((iface) => iface.status === "up")
+                                .map((iface) => (
+                                    <Badge
+                                        key={iface.name}
+                                        variant="outline"
+                                        className="bg-green-500/10 text-green-500 border-green-500/20"
+                                    >
+                                      {iface.name}
+                                    </Badge>
+                                ))}
+                          </div>
+                      )}
                     </div>
-                  )}
-                </div>
 
-                <div className="pt-2 border-t border-border space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">已接收:</span>
-                    <span className="text-lg font-semibold text-green-500 flex items-center gap-1">
+                    <div className="pt-2 border-t border-border space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">已接收:</span>
+                        <span className="text-lg font-semibold text-green-500 flex items-center gap-1">
                       ↓{" "}
-                      {networkUnit === "Bytes"
-                        ? `${networkTotals.received.toFixed(2)} GB`
-                        : formatNetworkTraffic(networkTotals.received * 1024 * 1024 * 1024, "Bits")}
-                      <span className="text-xs text-muted-foreground">({getTimeframeLabel(networkTimeframe)})</span>
+                          {networkUnit === "Bytes"
+                              ? `${networkTotals.received.toFixed(2)} GB`
+                              : formatNetworkTraffic(networkTotals.received * 1024 * 1024 * 1024, "Bits")}
+                          <span className="text-xs text-muted-foreground">({getTimeframeLabel(networkTimeframe)})</span>
                     </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">已发送:</span>
-                    <span className="text-lg font-semibold text-blue-500 flex items-center gap-1">
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">已发送:</span>
+                        <span className="text-lg font-semibold text-blue-500 flex items-center gap-1">
                       ↑{" "}
-                      {networkUnit === "Bytes"
-                        ? `${networkTotals.sent.toFixed(2)} GB`
-                        : formatNetworkTraffic(networkTotals.sent * 1024 * 1024 * 1024, "Bits")}
-                      <span className="text-xs text-muted-foreground">({getTimeframeLabel(networkTimeframe)})</span>
+                          {networkUnit === "Bytes"
+                              ? `${networkTotals.sent.toFixed(2)} GB`
+                              : formatNetworkTraffic(networkTotals.sent * 1024 * 1024 * 1024, "Bits")}
+                          <span className="text-xs text-muted-foreground">({getTimeframeLabel(networkTimeframe)})</span>
                     </span>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-border">
+                      <NetworkTrafficChart
+                          timeframe={networkTimeframe}
+                          onTotalsCalculated={setNetworkTotals}
+                          networkUnit={networkUnit}
+                      />
+                    </div>
                   </div>
-                </div>
+              ) : (
+                  <div className="text-center py-8 text-muted-foreground">网络数据不可用</div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
 
-                <div className="pt-3 border-t border-border">
-                  <NetworkTrafficChart
-                    timeframe={networkTimeframe}
-                    onTotalsCalculated={setNetworkTotals}
-                    networkUnit={networkUnit}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="text-center py-8 text-muted-foreground">网络数据不可用</div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-card border-border">
-          <CardHeader>
-            <CardTitle className="text-foreground flex items-center">
-              <Server className="h-5 w-5 mr-2" />
-              系统信息
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">运行时间:</span>
-              <span className="text-foreground">{systemData.uptime}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Proxmox 版本:</span>
-              <span className="text-foreground">{systemData.proxmox_version || "N/A"}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">内核:</span>
-              <span className="text-foreground font-mono text-sm">{systemData.kernel_version || "Linux"}</span>
-            </div>
-            {systemData.available_updates !== undefined && systemData.available_updates > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle className="text-foreground flex items-center">
+                <Server className="h-5 w-5 mr-2" />
+                系统信息
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">可用更新:</span>
-                <Badge variant="outline" className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20">
-                  {systemData.available_updates} 个软件包
-                </Badge>
+                <span className="text-muted-foreground">运行时间:</span>
+                <span className="text-foreground">{systemData.uptime}</span>
               </div>
-            )}
-          </CardContent>
-        </Card>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Proxmox 版本:</span>
+                <span className="text-foreground">{systemData.proxmox_version || "N/A"}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">内核:</span>
+                <span className="text-foreground font-mono text-sm">{systemData.kernel_version || "Linux"}</span>
+              </div>
+              {systemData.available_updates !== undefined && systemData.available_updates > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">可用更新:</span>
+                    <Badge variant="outline" className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20">
+                      {systemData.available_updates} 个软件包
+                    </Badge>
+                  </div>
+              )}
+            </CardContent>
+          </Card>
 
-        <Card className="bg-card border-border">
-          <CardHeader>
-            <CardTitle className="text-foreground flex items-center">
-              <Zap className="h-5 w-5 mr-2" />
-              系统概览
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex justify-between items-center pb-3 border-b border-border">
-              <div className="flex flex-col">
-                <span className="text-sm text-muted-foreground">平均负载 (1分钟):</span>
-              </div>
-              <div className="flex items-center gap-2">
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle className="text-foreground flex items-center">
+                <Zap className="h-5 w-5 mr-2" />
+                系统概览
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex justify-between items-center pb-3 border-b border-border">
+                <div className="flex flex-col">
+                  <span className="text-sm text-muted-foreground">平均负载 (1分钟):</span>
+                </div>
+                <div className="flex items-center gap-2">
                 <span className="text-lg font-semibold text-foreground font-mono">
                   {systemData.load_average[0].toFixed(2)}
                 </span>
-                <Badge variant="outline" className={loadStatus.color}>
-                  {loadStatus.status}
-                </Badge>
+                  <Badge variant="outline" className={loadStatus.color}>
+                    {loadStatus.status}
+                  </Badge>
+                </div>
               </div>
-            </div>
 
-            <div className="flex justify-between items-center pb-3 border-b border-border">
-              <span className="text-sm text-muted-foreground">CPU 线程数:</span>
-              <span className="text-lg font-semibold text-foreground">{systemData.cpu_threads || "N/A"}</span>
-            </div>
+              <div className="flex justify-between items-center pb-3 border-b border-border">
+                <span className="text-sm text-muted-foreground">CPU 线程数:</span>
+                <span className="text-lg font-semibold text-foreground">{systemData.cpu_threads || "N/A"}</span>
+              </div>
 
-            <div className="flex justify-between items-center pb-3 border-b border-border">
-              <span className="text-sm text-muted-foreground">物理磁盘:</span>
-              <span className="text-lg font-semibold text-foreground">{storageData?.disk_count || "N/A"}</span>
-            </div>
+              <div className="flex justify-between items-center pb-3 border-b border-border">
+                <span className="text-sm text-muted-foreground">物理磁盘:</span>
+                <span className="text-lg font-semibold text-foreground">{storageData?.disk_count || "N/A"}</span>
+              </div>
 
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">网络接口数:</span>
-              <span className="text-lg font-semibold text-foreground">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">网络接口数:</span>
+                <span className="text-lg font-semibold text-foreground">
                 {networkData?.physical_total_count || networkData?.physical_interfaces?.length || "N/A"}
               </span>
-            </div>
-          </CardContent>
-        </Card>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div>
   )
 }
